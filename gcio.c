@@ -22,10 +22,16 @@ namespace gcio {
                 (diagnose_if(task >= END, "task must be less than END", "error"))
         )
     {
+        *(volatile char*)0x4016 = 1;
         #pragma unroll
         for (uint8_t i = 0; i < task; i++){
             GCIO_ACK;
         }
+        *(volatile char*)0x4016 = 0;
+    }
+
+    inline void PreparePolling() {
+        __SwitchTask(REPORT)
     }
 
     void ChangeBehavior(const uint8_t behave){
